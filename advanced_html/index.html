@@ -19,7 +19,7 @@
     />
   </head>
   <body>
-    <header>
+    <header id="header">
       <div class="inner_header">
         <div class="menu_toggle">
           <input type="checkbox" />
@@ -92,12 +92,13 @@
       </div>
 
       <div class="bright_grid_container">
-        <div class="arrow_circle_section">
+
+        <div class="arrow_circle_section bright_flex_item">
           <div class="arrow_circle_white"></div>
           <div class="arrow_circle_orange"></div>
         </div>
 
-        <div class="bright_orange_grid">
+        <div class="bright_orange_grid bright_flex_item">
           <div class="bright_item_first">
             <p class="bright_heading">BRIGHT ASS <br />ORANGE</p>
             <p class="bright_paragraph">
@@ -344,5 +345,24 @@
         reprehenderit in voluptate
       </p>
     </footer>
+    <script>
+      let header = document.getElementById('header');
+      console.log(header);
+
+      document.addEventListener('scroll', function() {
+        
+        // Get the scroll position
+        let scrollPos = window.pageYOffset;
+        
+        if ( scrollPos < 100 ) {
+          header.style.backgroundColor = "";
+        } else {
+          header.style.backgroundColor = "black";
+        }
+        
+        
+      });
+
+     </script>
   </body>
 </html>

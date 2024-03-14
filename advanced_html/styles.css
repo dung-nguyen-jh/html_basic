@@ -2,7 +2,7 @@
   --bright_section_height: 775px;
   --bright_section_margin_top: -380px;
   --blonde_cell_height: 459px;
-  --mountain_flex_item_height: 790px;
+  --mountain_flex_item_height: 900px;
   --mountain_margin: -250px;
 }
 
@@ -18,6 +18,12 @@ header {
   z-index: 1000;
 }
 
+body.scrolled #header {
+  background-color: black;
+}
+
+
+
 /* dropdown */
 
 .dropdown {
@@ -32,6 +38,13 @@ header {
   min-width: 160px;
   box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
   z-index: 1;
+  opacity: 0; /* Start with opacity 0 */
+  transition: opacity 0.3s ease; /* Smooth transition effect for opacity */
+}
+
+.dropdown:hover .dropdown_content {
+  display: block;
+  opacity: 1; /* Change opacity to 1 on hover */
 }
 
 .dropdown_content a {
@@ -43,10 +56,6 @@ header {
 
 .dropdown_content a:hover {
   background-color: #f1f1f1;
-}
-
-.dropdown:hover .dropdown_content {
-  display: block;
 }
 
 /* menu */
@@ -63,10 +72,10 @@ header {
   background-image: url("./images/header_background.png"); /* Replace 'header-background.jpg' with your actual image file */
   height: 775px;
   background-attachment: fixed;
-  background-size: cover 100% 120%; /* Cover the entire header */
+  background-size: cover ; /* Cover the entire header */
   background-position: center;
   padding-top: 30%;
-  padding-left: 7%;
+  padding-left: 10%;
 }
 
 nav {
@@ -79,7 +88,7 @@ main {
 
 /* inside of header*/
 .inner_header {
-  padding: 50px 50px;
+  padding: 5% 8%;
   height: 60%;
   display: flex;
   flex-direction: column;
@@ -233,7 +242,7 @@ nav ul li:hover {
   height: calc(var(--bright_section_height) + var(--bright_section_margin_top));
   display: flex;
   flex-direction: row;
-  width: 93%;
+  width: 90%;
   margin-left: auto;
 
   /* height: 395px; */
@@ -242,11 +251,11 @@ nav ul li:hover {
 .bright_orange_grid {
   position: absolute;
   display: grid;
-  grid-template-columns: 3fr 5fr; /* Two columns */
+  grid-template-columns: 1fr 2fr; /* Two columns */
   grid-template-rows: 1fr 1fr; /* Two rows */
   height: var(--bright_section_height);
   top: var(--bright_section_margin_top);
-  width: 1150px;
+  width: 85%;
   right: 0;
 }
 
@@ -823,6 +832,7 @@ footer {
     height: var(--mountain_flex_item_height);
   }
   .mountain_flex {
+    height: max-content;
     width: 100%;
   }
 
@@ -857,6 +867,21 @@ footer {
     padding: 50px 30px;
   }
 
+  .mountain_paragraph {
+    font-size: 14px;
+    color: white;
+    font-family: "Open Sans", sans-serif;
+    overflow: hidden;
+  }
+  
+  
+  .mountain_paragraph_dark {
+    font-size: 14px;
+    color: #83969f;
+    font-family: "Open Sans", sans-serif;
+    overflow: hidden;
+  }
+
   /* footer  */
 
   footer {
@@ -872,6 +897,7 @@ footer {
     right: 0;
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
     gap: 30px;
     align-items: flex-start;
   }
@@ -904,6 +930,7 @@ footer {
   }
 
   .arrow_circle_section {
+    width: 100%;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -946,24 +973,6 @@ footer {
     z-index: 2;
   }
 
-  .menu_toggle span {
-    display: block;
-    width: 33px;
-    height: 4px;
-    margin-bottom: 5px;
-    position: relative;
-
-    background: #cdcdcd;
-    border-radius: 3px;
-
-    z-index: 1;
-
-    transform-origin: 4px 0px;
-
-    transition: transform 0.5s cubic-bezier(0.77, 0.2, 0.05, 1),
-      opacity 0.55s ease;
-  }
-
   .menu_toggle span:first-child {
     transform-origin: 0% 0%;
   }
@@ -994,6 +1003,26 @@ footer {
   .menu_toggle input:checked ~ span:nth-last-child(2) {
     transform: rotate(-45deg) translate(0, -1px);
   }
+
+  .menu_toggle span {
+    display: block;
+    width: 33px;
+    height: 4px;
+    margin-bottom: 5px;
+    position: relative;
+
+    background: #cdcdcd;
+    border-radius: 3px;
+
+    z-index: 1;
+
+    transform-origin: 4px 0px;
+
+    transition: transform 0.5s cubic-bezier(0.77, 0.2, 0.05, 1),
+      opacity 0.55s ease;
+  }
+
+  
 
   .menu_toggle input[type="checkbox"]:checked ~ nav .menu {
     transform: none;
