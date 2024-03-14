@@ -20,7 +20,7 @@ header {
 
 /* dropdown */
 
-.dropdown{
+.dropdown {
   display: inline-block;
   position: relative;
 }
@@ -30,7 +30,7 @@ header {
   position: absolute;
   background-color: #f9f9f9;
   min-width: 160px;
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
   z-index: 1;
 }
 
@@ -41,7 +41,9 @@ header {
   display: block;
 }
 
-.dropdown_content a:hover {background-color: #f1f1f1}
+.dropdown_content a:hover {
+  background-color: #f1f1f1;
+}
 
 .dropdown:hover .dropdown_content {
   display: block;
@@ -49,7 +51,7 @@ header {
 
 /* menu */
 
-.menu_toggle input[type="checkbox"]{
+.menu_toggle input[type="checkbox"] {
   display: none;
   opacity: 0;
 }
@@ -207,7 +209,7 @@ nav ul li:hover {
   width: 52px;
   height: 52px;
   margin: 5px;
-  transition: transform 1s ease; 
+  transition: transform 1s ease;
 }
 
 .arrow_circle_orange {
@@ -215,10 +217,11 @@ nav ul li:hover {
   width: 52px;
   height: 52px;
   margin: 5px;
-  transition: transform 1s ease; 
+  transition: transform 1s ease;
 }
 
-.arrow_circle_white:hover, .arrow_circle_orange:hover {
+.arrow_circle_white:hover,
+.arrow_circle_orange:hover {
   transform: rotate(360deg);
 }
 
@@ -911,77 +914,7 @@ footer {
 
   /* menu  */
 
-  .menu_toggle input[type="checkbox"]
-  {
-    display: block;
-    width: 40px;
-    height: 32px;
-    position: absolute;
-    top: -7px;
-    left: -5px;
-    cursor: pointer;
-    opacity: 0; 
-    z-index: 2; 
-  }
-
-  .menu_toggle span:first-child
-  {
-    transform-origin: 0% 0%;
-  }
-
-  .menu_toggle span:nth-last-child(2)
-  {
-    transform-origin: 0% 100%;
-  }
-
-  .menu_toggle input:checked ~ span:nth-last-child(3)
-  {
-    opacity: 0;
-    transform: rotate(0deg) scale(0.2, 0.2);
-  }
-
-  .menu_toggle
-  {
-    display: block;
-    position: relative;
-    z-index: 1;
-    -webkit-user-select: none;
-    user-select: none;
-  }
-
-  .menu_toggle input:checked ~ span
-  {
-    opacity: 1;
-    transform: rotate(45deg) translate(-2px, -1px);
-    background: #232323;
-  }
-
-  .menu_toggle input:checked ~ span:nth-last-child(2)
-  {
-    transform: rotate(-45deg) translate(0, -1px);
-  }
-
-  .menu_toggle span
-  {
-    display: block;
-    width: 33px;
-    height: 4px;
-    margin-bottom: 5px;
-    position: relative;
-    
-    background: #cdcdcd;
-    border-radius: 3px;
-    
-    z-index: 1;
-    
-    transform-origin: 4px 0px;
-    
-    transition: transform 0.5s cubic-bezier(0.77,0.2,0.05,1.0),
-                opacity 0.55s ease;
-  }
-
-  .menu
-  {
+  .menu {
     position: absolute;
     display: flex;
     flex-direction: column;
@@ -991,18 +924,78 @@ footer {
     list-style-type: none;
     -webkit-font-smoothing: antialiased;
     /* to stop flickering of text in safari */
-    
+
     transform-origin: 0% 0%;
     transform: translate(-100%, 0);
-    top:-77px;
+    top: -77px;
     left: -50px;
     padding-top: 150px;
-    
-    transition: transform 0.5s cubic-bezier(0.77,0.2,0.05,1.0);
+
+    transition: transform 0.5s cubic-bezier(0.77, 0.2, 0.05, 1);
   }
 
-  .menu_toggle input[type="checkbox"]:checked ~ nav .menu
-  {
+  .menu_toggle input[type="checkbox"] {
+    display: block;
+    width: 40px;
+    height: 32px;
+    position: absolute;
+    top: -7px;
+    left: -5px;
+    cursor: pointer;
+    opacity: 0;
+    z-index: 2;
+  }
+
+  .menu_toggle span {
+    display: block;
+    width: 33px;
+    height: 4px;
+    margin-bottom: 5px;
+    position: relative;
+
+    background: #cdcdcd;
+    border-radius: 3px;
+
+    z-index: 1;
+
+    transform-origin: 4px 0px;
+
+    transition: transform 0.5s cubic-bezier(0.77, 0.2, 0.05, 1),
+      opacity 0.55s ease;
+  }
+
+  .menu_toggle span:first-child {
+    transform-origin: 0% 0%;
+  }
+
+  .menu_toggle span:nth-last-child(2) {
+    transform-origin: 0% 100%;
+  }
+
+  .menu_toggle input:checked ~ span:nth-last-child(3) {
+    opacity: 0;
+    transform: rotate(0deg) scale(0.2, 0.2);
+  }
+
+  .menu_toggle {
+    display: block;
+    position: relative;
+    z-index: 1;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  .menu_toggle input:checked ~ span {
+    opacity: 1;
+    transform: rotate(45deg) translate(-2px, -1px);
+    background: #232323;
+  }
+
+  .menu_toggle input:checked ~ span:nth-last-child(2) {
+    transform: rotate(-45deg) translate(0, -1px);
+  }
+
+  .menu_toggle input[type="checkbox"]:checked ~ nav .menu {
     transform: none;
   }
 
@@ -1011,7 +1004,7 @@ footer {
     position: absolute;
     background-color: #f9f9f9;
     min-width: 160px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
     z-index: 1;
     top: 3px;
     left: 100%;
@@ -1021,12 +1014,11 @@ footer {
     display: inline;
     margin-top: 5px;
   }
-  
+
   nav ul li a {
     font-family: "Raleway";
     text-decoration: none;
     font-size: 13;
     color: #232323; /* Default color */
   }
-  
 }
