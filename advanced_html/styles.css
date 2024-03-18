@@ -88,7 +88,7 @@ main {
 
 /* inside of header*/
 .inner_header {
-  padding: 5% 8%;
+  padding: 20px 8%;
   height: 60%;
   display: flex;
   flex-direction: column;
@@ -548,7 +548,8 @@ nav ul li:hover {
 .mountain_column_flex_item:first-child {
   background-image: url("images/mountain.png");
   background-position: center;
-  background-size: cover;
+  background-size: cover 100%;
+  background-repeat: no-repeat;
 }
 
 .mountain_column_flex_item:nth-child(2) {
