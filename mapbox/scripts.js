@@ -24,7 +24,6 @@ function init() {
     };
   };
 
-
   map.on("click", function (event) {
     // Retrieve the coordinates where the user clicked
     let lngLat = event.lngLat;
@@ -79,7 +78,7 @@ function init() {
         `${url}?${new URLSearchParams(params).toString()}`
       );
       const suggestionsData = await suggestionsResponse.json();
-  
+
       return suggestionsData;
     } catch (error) {
       console.error("Suggestion fetch error:", error);
@@ -92,10 +91,10 @@ function init() {
       const retrieveUrl = `https://api.mapbox.com/search/searchbox/v1/retrieve/${encodeURIComponent(
         locationId
       )}?${new URLSearchParams(retrieveParams).toString()}`;
-    
+
       const resultResponse = await fetch(retrieveUrl);
       const resultData = await resultResponse.json();
-  
+
       return resultData;
     } catch (error) {
       console.error("Fetch location details error:", error);
@@ -105,7 +104,7 @@ function init() {
   async function onSearchResultClick(event) {
     try {
       const locationData = await getLocationData(event.target.id);
-      if(!locationData) return;
+      if (!locationData) return;
       map.flyTo({
         center: locationData.features[0].geometry.coordinates,
         zoom: config.zoom,

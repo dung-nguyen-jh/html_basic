@@ -1,0 +1,133 @@
+:root {
+    --margin-top-for-first-section: 20px;
+    --general-right-margin: 20px;
+}
+
+body{
+    background-color: #120127;
+    margin: 0;
+    padding: 0;
+    font-family: 'Montserrat', sans-serif;
+}
+
+/* first section */
+
+.firstSection{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    position: relative;
+}
+.firstSectionMain{
+    background-image: url('images/FirstSectionBackground.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    flex: 1 1 auto;
+    height: 915px;
+    position: relative;
+}
+
+.firstSectionNavi{
+    flex: 0 0 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+    /* paint pixture */
+
+    .paintPixtureHeadingText{
+        position: absolute;
+        color: white;
+        font-size: 132px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-weight: bold;
+        text-align: center;
+        margin: 0;
+        line-height: 0.8;
+    }
+
+    .firstSectionCircle {
+        width: 119px;
+        height: 119px;
+        border-radius: 50%; /* Makes the div a circle */
+        border: 8px solid white; /* Background color of the circle */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 16px; /* Font size of the text */
+        font-weight: bold; /* Font weight of the text */
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    /* menu for firstsection  */
+
+    .menuToggle{
+        margin-top: var(--margin-top-for-first-section);
+    }
+
+    .menuToggle span {
+        display: block;
+        width: 25px;
+        height: 3px;
+        margin-bottom: 5px;
+        position: relative;
+
+        background: #cdcdcd;
+        border-radius: 3px;
+
+        z-index: 1;
+    }
+
+    .mailIcon{
+        position: absolute;
+        background-image: url('images/mailIcon.png');
+        top: var(--margin-top-for-first-section);
+        right: var(--general-right-margin);
+        height: 17px;
+        width: 24px;
+    }
+
+    /* slide down paragraph and icon  */
+        .firstSectionSlideDown{
+            height: 250px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            margin-bottom: 100px;
+            position: relative;
+        }
+
+        .arrowDown{
+            background-image: url('images/ArrowShape.png');
+            height: 7px;
+            width: 12px;
+            background-size: cover;
+            background-repeat: no-repeat;
+        }
+
+        .slideDownText{
+            position: absolute;
+            top: 0;
+            margin: 0;
+            color: white;
+            font-size: 12px;
+            transform: rotate(-90deg);
+            white-space: nowrap;
+        }
+
+        .slideDownSubText{
+            color: white;
+            font-size: 10px;
+            transform: rotate(-90deg);
+            white-space: nowrap;
+            padding-left: 12px;
+        }
