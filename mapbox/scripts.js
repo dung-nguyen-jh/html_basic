@@ -85,36 +85,45 @@ function init() {
       language: config.language,
       limit: config.limit
     };
-    const suggestionsResponse = await fetch(url + "?" + new URLSearchParams(
-      params
-    ).toString());
+    const suggestionsResponse = await fetch(`${url}?${ new URLSearchParams(params).toString()}`);
     const suggestionsData = await suggestionsResponse.json();
     console.log(suggestionsData);
     return suggestionsData;
     }
     catch(error){
-      console.error("Error:", error);
+      console.error("Suggestion fetch error:", error);
     }
   }
 
-  async function onSearchResultClick(event){
-    try{
-          const retrieveParams = getAuthInfo();
+  async function getLocationData(locationId){
+    const retrieveParams = getAuthInfo();
+      try{
           const retrieveUrl = `https://api.mapbox.com/search/searchbox/v1/retrieve/${encodeURIComponent(
-            event.target.id)}?${new URLSearchParams(retrieveParams).toString()}`;
+            locationId)}?${new URLSearchParams(retrieveParams).toString()}`;
           // console.log(retrieveUrl);
             const resultResponse = await fetch(retrieveUrl);
             const resultData = await resultResponse.json();
             // console.log(data);
+            return resultData;
+            
+          }
+          catch(error){
+            console.error("Fetch location details error:", error);
+          }
+  }
+
+  async function onSearchResultClick(event){
+    try{
+            const locationData = await getLocationData(event.target.id);
             map.flyTo({
-              center: resultData.features[0].geometry.coordinates,
+              center: locationData.features[0].geometry.coordinates,
               zoom: config.zoom,
               essential: true,
             });
             document.getElementById("searchInput").value = event.target.textContent;
           }
           catch(error){
-            console.error("Error:", error);
+            console.error("Result click error:", error);
           }
   }
 
