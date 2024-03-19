@@ -130,7 +130,7 @@ function init() {
           try {
             const response = await fetch(retrieveUrl);
             const data = await response.json();
-            console.log(data);
+            // console.log(data);
             map.flyTo({
               center: data.features[0].geometry.coordinates,
               zoom: config.zoom,
