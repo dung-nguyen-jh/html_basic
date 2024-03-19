@@ -65,9 +65,10 @@ function init() {
       .setHTML("<h3>Marker</h3><p>" + msg + "</p>")
       .addTo(map);
 
-    let marker = new mapboxgl.Marker().setLngLat(lngLat).addTo(map);
+    let marker = new mapboxgl.Marker().setLngLat(lngLat).setPopup(popup).addTo(map);
 
     marker.getElement().addEventListener("click", function (event) {
+      console.log("You clicked on the marker");
       // alert('You clicked on the marker');
       marker.togglePopup();
       event.stopPropagation();
@@ -88,6 +89,7 @@ function init() {
       params
     ).toString());
     const suggestionsData = await suggestionsResponse.json();
+    console.log(suggestionsData);
     return suggestionsData;
     }
     catch(error){
@@ -97,7 +99,6 @@ function init() {
 
   async function onSearchResultClick(event){
     try{
-          
           const retrieveParams = authInfo();
           const retrieveUrl = `https://api.mapbox.com/search/searchbox/v1/retrieve/${encodeURIComponent(
             event.target.id)}?${new URLSearchParams(retrieveParams).toString()}`;
@@ -117,6 +118,21 @@ function init() {
           }
   }
 
+  function debounce(func, delay) {
+    let timeoutId;
+    
+    return function() {
+      const context = this;
+      const args = arguments;
+      
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        func.apply(context, args);
+      }, delay);
+    };
+  }
+  
+
   async function searchMapbox() {
 
     const searchInput = document.getElementById("searchInput").value.trim();
@@ -127,6 +143,7 @@ function init() {
     }
 
     const suggestionsData = await getSuggestion(searchInput);
+    searchResultsDiv.innerHTML = "";
 
     suggestionsData.suggestions.forEach((feature) => {
       const name = feature.name;
@@ -142,7 +159,9 @@ function init() {
     .getElementById("searchInput")
     .addEventListener("keyup", function (event) {
       // Number 13 is the "Enter" key on the keyboard
-      searchMapbox();
+      // debounce(searchMapbox(), 300);
+      const decouncedSearch = debounce(searchMapbox, 300);
+      decouncedSearch()
       event.preventDefault();
     });
 }
