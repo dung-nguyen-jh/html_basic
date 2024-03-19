@@ -59,7 +59,6 @@ function init() {
       .addTo(map);
 
     marker.getElement().addEventListener("click", function (event) {
-      console.log("You clicked on the marker");
       // alert('You clicked on the marker');
       marker.togglePopup();
       event.stopPropagation();
@@ -80,7 +79,7 @@ function init() {
         `${url}?${new URLSearchParams(params).toString()}`
       );
       const suggestionsData = await suggestionsResponse.json();
-      console.log(suggestionsData);
+  
       return suggestionsData;
     } catch (error) {
       console.error("Suggestion fetch error:", error);
@@ -93,10 +92,10 @@ function init() {
       const retrieveUrl = `https://api.mapbox.com/search/searchbox/v1/retrieve/${encodeURIComponent(
         locationId
       )}?${new URLSearchParams(retrieveParams).toString()}`;
-      // console.log(retrieveUrl);
+    
       const resultResponse = await fetch(retrieveUrl);
       const resultData = await resultResponse.json();
-      // console.log(data);
+  
       return resultData;
     } catch (error) {
       console.error("Fetch location details error:", error);
