@@ -16,7 +16,7 @@ function init() {
     zoom: config.zoom,
   });
 
-  const authInfo = ()=>{
+  const getAuthInfo = ()=>{
     const sessionToken = Math.random().toString(36).substring(2, 15);
     return{
       access_token: mapboxgl.accessToken,
@@ -78,7 +78,7 @@ function init() {
   async function getSuggestion (searchInput){
     try{
     const url = "https://api.mapbox.com/search/searchbox/v1/suggest";
-    const auth = authInfo();
+    const auth = getAuthInfo();
     const params = {
       ...auth,
       q: searchInput,
@@ -99,7 +99,7 @@ function init() {
 
   async function onSearchResultClick(event){
     try{
-          const retrieveParams = authInfo();
+          const retrieveParams = getAuthInfo();
           const retrieveUrl = `https://api.mapbox.com/search/searchbox/v1/retrieve/${encodeURIComponent(
             event.target.id)}?${new URLSearchParams(retrieveParams).toString()}`;
           // console.log(retrieveUrl);
