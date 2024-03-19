@@ -66,7 +66,7 @@ function init() {
     });
   }
 
-  async function getSuggestion(searchInput) {
+  async function getSuggestions(searchInput) {
     try {
       const url = "https://api.mapbox.com/search/searchbox/v1/suggest";
       const auth = getAuthInfo();
@@ -140,7 +140,7 @@ function init() {
       return; // If search input is empty, do nothing
     }
 
-    const suggestionsData = await getSuggestion(searchInput);
+    const suggestionsData = await getSuggestions(searchInput);
     searchResultsDiv.innerHTML = "";
 
     suggestionsData.suggestions.forEach((feature) => {
