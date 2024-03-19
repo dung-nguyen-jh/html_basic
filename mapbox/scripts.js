@@ -2,7 +2,8 @@ function init() {
   const config = {
     language: "en",
     limit: 5,
-    zoom: 9
+    zoom: 9,
+    language: "en",
   }
   const ACCESS_TOKEN =
     "pk.eyJ1IjoidGhpbmhsZTk5IiwiYSI6ImNsdHd1M3RjejAxYmwyaXBvbWRvN3VldW0ifQ.u_n9TO0Rr00-a65HjZ-0Fw";
@@ -14,6 +15,14 @@ function init() {
     center: [-73.99209, 40.68933],
     zoom: config.zoom,
   });
+
+  const authInfo = ()=>{
+    const sessionToken = Math.random().toString(36).substring(2, 15);
+    return{
+      access_token: mapboxgl.accessToken,
+      session_token: sessionToken
+    }
+  }
 
   const searchJS = document.getElementById("search-js");
   searchJS.onload = function () {
@@ -64,7 +73,52 @@ function init() {
       event.stopPropagation();
     });
   }
+
+  async function getSuggestion (searchInput){
+    try{
+    const url = "https://api.mapbox.com/search/searchbox/v1/suggest";
+    const auth = authInfo();
+    const params = {
+      ...auth,
+      q: searchInput,
+      language: config.language,
+      limit: config.limit
+    };
+    const suggestionsResponse = await fetch(url + "?" + new URLSearchParams(
+      params
+    ).toString());
+    const suggestionsData = await suggestionsResponse.json();
+    return suggestionsData;
+    }
+    catch(error){
+      console.error("Error:", error);
+    }
+  }
+
+  async function onSearchResultClick(event){
+    try{
+          
+          const retrieveParams = authInfo();
+          const retrieveUrl = `https://api.mapbox.com/search/searchbox/v1/retrieve/${encodeURIComponent(
+            event.target.id)}?${new URLSearchParams(retrieveParams).toString()}`;
+          // console.log(retrieveUrl);
+            const resultResponse = await fetch(retrieveUrl);
+            const resultData = await resultResponse.json();
+            // console.log(data);
+            map.flyTo({
+              center: resultData.features[0].geometry.coordinates,
+              zoom: config.zoom,
+              essential: true,
+            });
+            document.getElementById("searchInput").value = event.target.textContent;
+          }
+          catch(error){
+            console.error("Error:", error);
+          }
+  }
+
   async function searchMapbox() {
+
     const searchInput = document.getElementById("searchInput").value.trim();
     const searchResultsDiv = document.getElementById("searchResults");
     if (searchInput === "" || searchInput === null || searchInput.length < 3) {
@@ -72,78 +126,15 @@ function init() {
       return; // If search input is empty, do nothing
     }
 
-    let sessionToken = Math.random().toString(36).substring(2, 15);
+    const suggestionsData = await getSuggestion(searchInput);
 
-    // API endpoint
-    const url = "https://api.mapbox.com/search/searchbox/v1/suggest";
-    // Parameters
-    const params = {
-      q: searchInput,
-      language: "en",
-      limit: config.limit,
-      access_token: mapboxgl.accessToken,
-      session_token: sessionToken,
-    };
-
-    // Constructing URL with parameters
-    // let queryString = Object.keys(params)
-    //   .map((key) => key + "=" + encodeURIComponent(params[key]))
-    //   .join("&");
-    // const fullUrl = url + "?" + queryString;
-    // console.log(fullUrl);
-
-    try {
-      const response = await fetch(url + "?" + new URLSearchParams(
-        {
-          q: searchInput,
-          language: "en",
-          limit: config.limit,
-          access_token: mapboxgl.accessToken,
-          session_token: sessionToken,
-        }
-      ).toString());
-      const data = await response.json();
-      searchResultsDiv.innerHTML = ""; // Clear previous results
-      // Displaying result
-      data.suggestions.forEach((feature) => {
-        const name = feature.name;
-        const resultDiv = document.createElement("div");
-        resultDiv.innerHTML = `<p class="search-result-item" id="${feature.mapbox_id}">${name}</p>`;
-        searchResultsDiv.appendChild(resultDiv);
-      });
-      const resultList = Array.from(searchResultsDiv.children);
-      resultList.forEach((result) => {
-        result.addEventListener("click", async function (event) {
-          // console.log(event.target.id);
-          let session_token = Math.random().toString(36).substring(2, 15);
-          document.getElementById("searchInput").value = result.textContent;
-          const retrieveParams = {
-            access_token: mapboxgl.accessToken,
-            session_token: session_token
-           }
-          const retrieveUrl = `https://api.mapbox.com/search/searchbox/v1/retrieve/${encodeURIComponent(
-            event.target.id)}` + "?" + new URLSearchParams({
-              access_token: mapboxgl.accessToken,
-              session_token: session_token
-            });
-          // console.log(retrieveUrl);
-          try {
-            const response = await fetch(retrieveUrl);
-            const data = await response.json();
-            // console.log(data);
-            map.flyTo({
-              center: data.features[0].geometry.coordinates,
-              zoom: config.zoom,
-              essential: true,
-            });
-          } catch (error) {
-            console.error("Error:", error);
-          }
-        });
-      });
-    } catch (error) {
-      console.error("Error:", error);
-    }
+    suggestionsData.suggestions.forEach((feature) => {
+      const name = feature.name;
+      const resultDiv = document.createElement("div");
+      resultDiv.innerHTML = `<p class="search-result-item" id="${feature.mapbox_id}">${name}</p>`;
+      resultDiv.addEventListener("click", onSearchResultClick)
+      searchResultsDiv.appendChild(resultDiv);
+    });
   }
 
   // Adding event listener to input field to trigger search on keyup
