@@ -24,18 +24,6 @@ function init() {
     };
   };
 
-  const searchJS = document.getElementById("search-js");
-  searchJS.onload = function () {
-    const searchBox = new MapboxSearchBox();
-    searchBox.accessToken = ACCESS_TOKEN;
-    searchBox.options = {
-      types: "address,poi",
-      proximity: [-73.99209, 40.68933],
-    };
-    searchBox.marker = true;
-    searchBox.mapboxgl = mapboxgl;
-    // map.addControl(searchBox);
-  };
 
   map.on("click", function (event) {
     // Retrieve the coordinates where the user clicked
@@ -118,12 +106,12 @@ function init() {
   async function onSearchResultClick(event) {
     try {
       const locationData = await getLocationData(event.target.id);
-      if(locationDta)
-        map.flyTo({
-          center: locationData.features[0].geometry.coordinates,
-          zoom: config.zoom,
-          essential: true,
-        });
+      if(!locationData) return;
+      map.flyTo({
+        center: locationData.features[0].geometry.coordinates,
+        zoom: config.zoom,
+        essential: true,
+      });
       document.getElementById("searchInput").value = event.target.textContent;
     } catch (error) {
       console.error("Result click error:", error);
