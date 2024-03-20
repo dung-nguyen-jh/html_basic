@@ -657,6 +657,39 @@ body{
 
 
 @media screen and (max-width: 750px) {
+    #secondCarousel{
+        display: none;
+    }
+    .backgroundTranslucent{
+        display: none;
+    }
+    .finalLine{
+        width: 70%;
+        text-align: center;
+        margin-left: auto;
+        margin-right: auto;
+        display: block;
+    }
+    .footerContentContainer{
+        margin-left: 0;
+        width: 100%;
+        padding: 0;
+        justify-content: center;
+        align-items: center;
+        margin-top: 30px;
+    }
+    .mainBasicParagraphContainer{
+        flex-direction: column;
+        margin-left: 0;
+        justify-content: center;
+        width: 100%;
+        padding: 0 50px;
+    }
+    .fourParagraphContainer{
+        margin-left: 0;
+        width: 100%;
+        padding: 0 50px;
+    }
     .threeBigDots{
         display: block;
     }
@@ -701,14 +734,19 @@ body{
     #firstMainHeading{
         position: relative;
         color: white;
-        font-size: 132px;
-        top: 20%;
+        font-size: 96px;
+        top: 10%;
         font-weight: bold; 
-        margin-left: 30px;
         text-align: left;
         line-height: 0.8;
+        width: fit-content;
+        left: var(--general-left-on-narrow);
+        transform: none;
+        /* margin-left: var(--general-left-on-narrow); */
     }
     #passionContainer{
+        position: absolute;
+        left: 50px;
         width: 80%;
     }
     #passionContainer .paragraphHeading{
