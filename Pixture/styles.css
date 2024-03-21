@@ -282,7 +282,7 @@ body {
   margin-bottom: 30px;
 }
 
-.carousel_slides {
+.carouselSlides {
   display: flex;
   position: relative;
   width: 100%;
@@ -290,10 +290,10 @@ body {
   transition: transform 0.5s ease-in-out;
 }
 
-.carousel_slide {
+.carouselSlide {
   width: fit-content;
   position: relative;
-  margin-right: 20px;
+  margin-right: 28.3px;
   inset: 0;
   /* opacity: 0; */
 }
@@ -304,7 +304,7 @@ body {
   background-color: white;
 }
 
-.carousel-button {
+.carouselButton {
   position: absolute;
   top: 40%;
   opacity: 0.8;
@@ -317,7 +317,7 @@ body {
   background: transparent;
 }
 
-.carousel-button:hover {
+.carouselButton:hover {
   opacity: 1;
 }
 .prev {
