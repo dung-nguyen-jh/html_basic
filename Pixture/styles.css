@@ -628,7 +628,6 @@ body {
 .footerContentContainer {
   display: flex;
   flex-direction: row;
-  align-items: center;
   margin-top: 50px;
   margin-left: calc(var(--general-left-gap) + var(--general-left-margin));
   gap: 50px;
