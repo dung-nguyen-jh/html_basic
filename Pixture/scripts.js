@@ -8,11 +8,9 @@ const initCarousel = () => {
     const totalSlidesWidth = slides.reduce((acc, slide) => acc + slide.offsetWidth, 0);
 
     buttons.forEach((button) => {
-      const newButton = button.cloneNode(true); // Cloning the button
-      button.replaceWith(newButton); // Replacing the button with the cloned one
 
-      newButton.addEventListener("click", () => {
-        const offset = newButton.dataset.carouselButton === "next" ? 1 : -1;
+      button.addEventListener("click", () => {
+        const offset = button.dataset.carouselButton === "next" ? 1 : -1;
         const activeSlide = slidesTrack.querySelector("[data-active]");
         //hanlde right button click when first slide is on screen
         console.log(`activeSlide: ${slides.indexOf(activeSlide)} offset: ${offset} totalSlidesWidth: ${totalSlidesWidth} window.innerWidth: ${window.innerWidth}`);
