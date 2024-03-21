@@ -6,9 +6,6 @@ const initCarousel = () => {
     const buttons = carousel.querySelectorAll("[data-carousel-button]");
     const slideWidth = slides[0].offsetWidth + 30;
     const totalSlidesWidth = slides.reduce((acc, slide) => acc + slide.offsetWidth, 0);
-    slides.forEach((slide, index) => {
-      slide.style.left = slideWidth * index + "px";
-    });
 
     buttons.forEach((button) => {
       const newButton = button.cloneNode(true); // Cloning the button
@@ -36,23 +33,4 @@ const initCarousel = () => {
   });
 };
 
-const debounceInit = () => {
-  let timeout;
-  return () => {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => {
-      const buttons = document.querySelectorAll("[data-carousel-button]");
-      buttons.forEach((button) => {
-        const clonedButton = button.cloneNode(true);
-        button.replaceWith(clonedButton);
-      });
-      initCarousel();
-    }, 100);
-  };
-} 
-
-const carouselDebounceInit = debounceInit();
-
-window.addEventListener("resize", carouselDebounceInit);
-window.addEventListener("load", carouselDebounceInit);
 initCarousel();

@@ -292,7 +292,8 @@ body {
 
 .carousel_slide {
   width: fit-content;
-  position: absolute;
+  position: relative;
+  margin-right: 20px;
   inset: 0;
   /* opacity: 0; */
 }
