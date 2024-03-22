@@ -1,0 +1,20 @@
+1. 
+    it is ideal to base new feature's branch on the most stable branch exist so in this situation, it's a good idea to create
+    a new branch from production.
+    corresponding commands:
+        git checkout production
+        git checkout -b new_feature production 
+        git push --set-upstream origin new_feature
+2.
+    approach 1:
+        create a branch to hotfix this feature
+            git checkout feature
+            git checkout -b feature_hotfix
+        fix the bug from this hotfix branch
+        push the code to github
+            git push --set-upstream origin feature_hotfix
+        merge the code with feature and resolve conflicts if needed
+            git fetch
+            git checkout feature
+            git merge feature_hotfix
+            
