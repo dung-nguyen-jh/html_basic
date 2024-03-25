@@ -7,6 +7,14 @@
         git push --set-upstream origin new_feature
 2.
     approach 1:
+        just fix the bug on the feature branch 
+            git checkout feature_branch
+        make the changes, fix those bugs, push to the branch
+            git add 
+            git commit -m "Fix: fix the bug"
+            git push origin feature
+            
+    approach 2:
         create a branch to hotfix this feature
             git checkout feature
             git checkout -b feature_hotfix
@@ -17,4 +25,16 @@
             git fetch
             git checkout feature
             git merge feature_hotfix
+
+3.
+    using revert:revert create commits that undoes the previous ones
+        use git log to track commits ids that need to be deleted
+        use git revert to undo the changes
+            git revert k101100 fc9348c 0492978
+        revert those commits in reverse order in which they are introduced, this prevent conflicts and inconsistency 
+        after each revert, there might be some conflicts, solve the conflicts, then
+            git add .
+            git commit -m "revert change from"
+            git push origin feature
+    
             
