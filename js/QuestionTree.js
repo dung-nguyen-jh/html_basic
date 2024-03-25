@@ -17,11 +17,15 @@ const answers = {}
 
 
 function askQuestion(question) {
+  //for the sake of user interface, have to get the list
+  //of multiple answers and let the user choose one
   const answerList = [];
   for (let answerId of question.answerIdList) {
     answerList.push(answers[answerId]);
   }
-  
+
+  //getting the user's answer using the prompt
+  //use the trim version of the answer to compare with the answer text
   const userAnswer = prompt(question.text+"\n"+answerList.map((answer, index) => `${answer.text}`).join("\n"));
   for (let answerId of question.answerIdList) {
     if (userAnswer.toLowerCase() === answers[answerId].text.toLowerCase()) {
@@ -41,13 +45,20 @@ function runQuestionTree(currentQuestionId) {
 
   const answer = askQuestion(currentQuestion);
   if (answer === null) {
+    //if the user's answer is not valid
+    //check if this question has a default next question
+    //if it does, run the default next question
     const defaultNextQuestion = currentQuestion.defaultNextQuestion;
     if (defaultNextQuestion !== null) {
       runQuestionTree(defaultNextQuestion);
     } 
-    else if (defaultNextQuestion == null && currentQuestion.answerList.length === 0) {
+    //else check if the current question just simply ends the decision tree
+    //the end of the tree is the leaf node
+    //which means that it has no answer and no default next question
+    else if (defaultNextQuestion == null && currentQuestion.answerIdList.length === 0) {
       console.log("End of the decision tree.");
     }
+    //or else it is an invalid answer
     else {
       console.log("Invalid answer. Please try again.");
     }
@@ -57,26 +68,142 @@ function runQuestionTree(currentQuestionId) {
   runQuestionTree(answer.nextQuestion);
 }
 
+//add a question id to the answer's questionsIdList
+function addToAnswerQuestionIdList(answerId, questionId){
+  if(answers[answerId] && answers[answerId].questionsIdList.indexOf(questionId) === -1){
+    answers[answerId].questionsIdList.push(questionId);
+  }
+}
+
+// add an answer id to the question's answerIdList
+function addToQuestionAnswerIdList(questionId, answerId){
+  if(questions[questionId] && questions[questionId].answerIdList.indexOf(answerId) === -1){
+    questions[questionId].answerIdList.push(answerId);
+  }
+}
+
+//alter the list of elements which are currently potiting to the question
+function addToQuestionPointedToBy(questionId, elementId){
+  if(questions[questionId] && questions[questionId].pointedToBy.indexOf(elementId) === -1){
+    questions[questionId].pointedToBy.push(elementId);
+  }
+}
+
+//remove a question id from the answer's questionsIdList
+function removeFromAnswerQuestionIdList(answerId, questionId){
+  if(answers[answerId] && answers[answerId].questionsIdList.indexOf(questionId) !== -1){
+    answers[answerId].questionsIdList.splice(answers[answerId].questionsIdList.indexOf(questionId), 1);
+    if(answers[answerId].questionsIdList.length === 0)
+      DeleteAnswer(answerId);
+  }
+}
+
+//remove an answer id from the question's answerIdList
+function removeFromQuestionAnswerIdList(questionId, answerId){
+  if(questions[questionId] && questions[questionId].answerIdList.indexOf(answerId) !== -1){
+    questions[questionId].answerIdList.splice(questions[questionId].answerIdList.indexOf(answerId), 1);
+  }
+}
+
+//remove an element id from the question's pointedToBy list
+function removeFromQuestionPointedToBy(questionId, elementId){
+  if(questions[questionId] && questions[questionId].pointedToBy.indexOf(elementId) !== -1){
+    questions[questionId].pointedToBy.splice(questions[questionId].pointedToBy.indexOf(elementId), 1);
+  }
+}
+
+function updateQuestionAnswerIdList(questionId, answerIdList){
+  if(questions[questionId]){
+    if(questions[questionId].answerIdList !== answerIdList){
+      //because each answer has its own list of questions it is related to
+      //update the answerIdList accordingly to the new question answer list
+      for(let answerId of questions[questionId].answerIdList){
+        if(!answerIdList.includes(answerId)){
+          removeFromAnswerQuestionIdList(answerId, questionId);
+        }
+        addToAnswerQuestionIdList(answerId, questionId);
+      }
+      questions[questionId].answerIdList = answerIdList;
+    }
+  }
+  else{
+    console.log("question does not exist to update the answerIdList");
+  }
+}
+
+function updateAnswerQuestionIdList(answerId, questionIdList){
+  if(answers[answerId]){
+    if(answers[answerId].questionsIdList !== questionIdList){
+      //because each question has its own list of answers it is related to
+      //update the questionIdList accordingly to the new answer question list
+      for(let questionId of answers[answerId].questionsIdList){
+        if(!questionIdList.includes(questionId)){
+          removeFromQuestionAnswerIdList(questionId, answerId);
+        }
+        addToQuestionAnswerIdList(questionId, answerId);
+      }
+      answers[answerId].questionsIdList = questionIdList;
+    }
+  }
+  else{
+    console.log("answer does not exist to update the questionIdList");
+  }
+}
+
+//remove the id of the next question from the answer that are pointing to this question
+function unlinkAnswersToQuestion(questionId){
+  //remove the current question from the answer that are pointing to this
+  const currentQuestion = questions[questionId];
+  const answerIdPoitingList = currentQuestion.pointedToBy;
+  const answerIdList = currentQuestion.answerIdList;
+  for(let answerId of answerIdPoitingList){
+    //remove the answer next questions that are pointing to this question
+    if(answers[answerId] && answers[answerId].nextQuestion === questionId){
+      answers[answerId].nextQuestion = null;
+    }
+  }
+}
+
+//remove questions that are pointing to this question
+//also remove this question from the questions that are pointing to the next question
+function unlinkQuestionToQuestion(questionId){
+  const currentQuestion = questions[questionId];
+  const pointedToBy = currentQuestion.pointedToBy;
+  //becasue each question has a list of id pointing to it
+  //remove this id from all the questions that are pointing to this question
+  for(let questionId of pointedToBy){
+    if(questions[questionId] && questions[questionId].defaultNextQuestion === questionId){
+      questions[questionId].defaultNextQuestion = null;
+    }
+  }
+  //update the pointed to of the question this question is pointing to
+  if(currentQuestion.defaultNextQuestion){
+    const nextQuestionId = currentQuestion.defaultNextQuestion;
+    if(questions[nextQuestionId]){
+      //check if the current question in the next question's pointedToBy list
+      const indexOfQuestion = questions[nextQuestionId].pointedToBy.indexOf(questionId);
+      if(indexOfQuestion !== -1)
+        questions[nextQuestionId].pointedToBy.splice(indexOfQuestion, 1);
+    }
+  }
+}
+
 function AddQuestion(text, answerIdList=[], defaultNextQuestion = null) {
-  //create new id
+        //create new id
         const newQuestionId = "q" + (Object.keys(questions).length + 1);
         //add new question to the questions object
         questions[newQuestionId] = new Question(text, answerIdList, defaultNextQuestion);
-        if(answerIdList.lenght!==0){
+        if(answerIdList.length!==0){
         //add question to the answers object
           for(let answerId of answerIdList){
-            //loop through the answerIdList and add the new question to the questionsIdList
-            if(answers[answerId]){
-              //if the answerId exists in the answers object, add the new question to the questionsIdList
-              if(answers[answerId].questionsIdList.indexOf(newQuestionId) === -1)
-                answers[answerId].questionsIdList.push(newQuestionId);
-          }
+            //because the answers hold a list of questions they are realted to
+            //add new question to the answer's questionsIdList
+            addToAnswerQuestionIdList(answerId, newQuestionId);
         }
       }
       if(defaultNextQuestion){
-        if(questions[defaultNextQuestion]){
-          questions[defaultNextQuestion].pointedToBy.push(newQuestionId);
-        }
+        //becasue each questions has a list of id pointing to it
+        addToQuestionPointedToBy(defaultNextQuestion, newQuestionId);
       }
 }
 
@@ -88,16 +215,10 @@ function AddAnswer(text, questionsIdList = [], nextQuestion = null) {
   //add answer to the questions object
   for(let questionId of questionsIdList){
     //loop through the questionsIdList and add the new answer to the answerIdList
-    if(questions[questionId]){
-      //if the questionId exists in the questions object, add the new answer to the answerIdList
-      if(questions[questionId].answerIdList.indexOf(newAnswerId) === -1)
-        questions[questionId].answerIdList.push(newAnswerId);
-    }
+   addToQuestionAnswerIdList(questionId, newAnswerId);
   }
   if(nextQuestion){
-    if(questions[nextQuestion]){
-      questions[nextQuestion].pointedToBy.push(newAnswerId);
-    }
+    addToQuestionPointedToBy(nextQuestion, newAnswerId);
   }
 }
 
@@ -106,35 +227,15 @@ function DeleteQuestion(questionId) {
     const currentQuestion = questions[questionId];
     const answerIdList = currentQuestion.answerIdList;
     //loop through the answers object and delete the question from the questionsIdList
-    for(let answerId in answerIdList){
-      if(answers[answerId] && answers[answerId].questionsIdList.indexOf(questionId) !== -1){
-        answers[answerId].questionsIdList.splice(answers[answerId].questionsIdList.indexOf(questionId), 1);
-        if(answers[answerId].questionsIdList.length === 0)
-          DeleteAnswer(answerId);
-      }   
+    for(let answerId of answerIdList){
+      //because each question has a list of answers it is related to
+      //if the questions are deleted, the answers should be updated
+      //if the answer has no questions relate to it, delete the answer
+      removeFromAnswerQuestionIdList(answerId, questionId);   
     }
-    const pointedToBy = currentQuestion.pointedToBy;
-    //loop through the answers object and delete the question from the nextQuestion
-    for(let answerId of pointedToBy){
-      // console.log('answerId: '+answerId);
-      if(answers[answerId] && answers[answerId].nextQuestion == questionId){
-        // console.log('found '+answers[answerId].nextQuestion);
-        answers[answerId].nextQuestion = null;
-      }
-    }
-    //loop through the questions object and delete the question from the defaultNextQuestion
-    for(let questionId of pointedToBy){
-      if(questions[questionId] && questions[questionId].defaultNextQuestion === questionId){
-        questions[questionId].defaultNextQuestion = null;
-      }
-    }
-
-    //remove the pointed by by this question
-    if (currentQuestion.defaultNextQuestionId !== null) {
-      if (questions[currentQuestion.defaultNextQuestionId]) {
-        questions[currentQuestion.defaultNextQuestionId].pointedToBy.splice(questions[currentQuestion.defaultNextQuestionId].pointedToBy.indexOf(questionId), 1);
-      }
-    }
+    //all elements pointing to this question should be updated
+    unlinkAnswersToQuestion(questionId);
+    unlinkQuestionToQuestion(questionId);
     //if the questionId exists in the questions object, delete the question
     delete questions[questionId];
     console.log("delete question successfully")
@@ -147,15 +248,11 @@ function DeleteAnswer(answerId) {
     const questionIdList = currentAnswer.questionsIdList;
     //loop through the questions object and delete the answer from the answerIdList
     for(let questionId of questionIdList){
-      if(questions[questionId] && questions[questionId].answerIdList.indexOf(answerId) !== -1){
-        questions[questionId].answerIdList.splice(questions[questionId].answerIdList.indexOf(answerId), 1);
-      } 
+      removeFromQuestionAnswerIdList(questionId, answerId);
     }
-    //remove the pointed by by this answer
+    //remove the pointed question by by this answer
     if(currentAnswer.nextQuestion){
-      if(questions[currentAnswer.nextQuestion]){
-        questions[currentAnswer.nextQuestion].pointedToBy.splice(questions[currentAnswer.nextQuestion].pointedToBy.indexOf(answerId), 1);
-      }
+      removeFromQuestionPointedToBy(currentAnswer.nextQuestion, answerId);
     }
 
     //if the answerId exists in the answers object, delete the answer
@@ -186,32 +283,23 @@ function updateQuestion(questionId,{text, answerIdList, defaultNextQuestion}){
       //update the question text
       questions[questionId].text = text;
     }
-    if(answerIdList && questiond[questionId].answerIdList !== answerIdList){
-      //update the answerIdList
-      for(let answerId of questiond[questionId].answerIdList){
-        //loop through the answerIdList and add the new question to the questionsIdList
-        if(!answerIdList.includes(answerId)){
-          //if the answerId exists in the answers object, delete the question from the questionsIdList
-          if(answer[answerId] && answers[answerId].questionsIdList.indexOf(questionId) !== -1){
-            answers[answerId].questionsIdList.splice(answers[answerId].questionsIdList.indexOf(questionId), 1);
-          }
-          if(answer[answerId].questionsIdList.length === 0)
-            DeleteAnswer(answerId);
-        }
-      }
-      questions[questionId].answerIdList = answerIdList;
+    if(answerIdList){
+      //if user pass in an answer list, update the answerIdList
+      updateQuestionAnswerIdList(questionId, answerIdList);
     }
-    if(defaultNextQuestion && questiond[questionId].defaultNextQuestion !== defaultNextQuestion){
-      if(questions[defaultNextQuestion]){
-        const currentQuestion = questions[questionId];
-        const nextQuestionId = currentQuestion.defaultNextQuestion;
-        if(questions[nextQuestionId].pointedToBy.indexOf(questionId) !== -1){
-          questions[nextQuestionId].pointedToBy.splice(questions[nextQuestionId].pointedToBy.indexOf(questionId), 1);
-        }
-        questions[questionId].defaultNextQuestion = defaultNextQuestion;
-      }
+      
+    if(defaultNextQuestion && questions[questionId].defaultNextQuestion !== defaultNextQuestion){
+     //because each questions store the id of the elements poitning to it
+     //first we need to update that list of the defaultNextQuestion of this one
+     removeFromQuestionPointedToBy(questions[questionId].defaultNextQuestion, questionId);
+     //then we add this question to the list of poitned to by of the defaultNextQuestion
+     addToQuestionPointedToBy(defaultNextQuestion, questionId);
+     questions[questionId].defaultNextQuestion = defaultNextQuestion;
     }
     console.log("update question successfully");
+  }
+  else{
+    console.log("question does not exist");
   }
 }
 
@@ -223,28 +311,20 @@ function updateAnswer(answerId,{text, questionsIdList, nextQuestion}){
     }
     if(questionsIdList && answers[answerId].questionsIdList !== questionsIdList){
       //update the questionsIdList
-      for(let questionId of answers[answerId].questionsIdList){
-        //loop through the questionsIdList and add the new answer to the answerIdList
-        if(!questionsIdList.includes(questionId)){
-          //if the questionId exists in the questions object, delete the answer from the answerIdList
-          if(questions[questionId] && questions[questionId].answerIdList.indexOf(answerId) !== -1){
-            questions[questionId].answerIdList.splice(questions[questionId].answerIdList.indexOf(answerId), 1);
-          }
-        }
-      }
-      answers[answerId].questionsIdList = questionsIdList;
+      updateAnswerQuestionIdList(answerId, questionsIdList);
     }
-    if(nextQuestion && answer[answerId].nextQuestion !== nextQuestion){
+    if(nextQuestion && answers[answerId].nextQuestion !== nextQuestion){
+      //because each question has a list of id pointing to it
+      //first we need to update that list of the nextQuestion of this one
+      removeFromQuestionPointedToBy(answers[answerId].nextQuestion, answerId);
+      //then we add this answer to the list of poitned to by of the nextQuestion
+      addToQuestionPointedToBy(nextQuestion, answerId);
       answers[answerId].nextQuestion = nextQuestion;
-      const currentNextQuestion = answers[answerId].nextQuestion;
-      if(questions[currentNextQuestion].pointedToBy.indexOf(answerId) !== -1){
-        questions[currentNextQuestion].pointedToBy.splice(questions[currentNextQuestion].pointedToBy.indexOf(answerId), 1);
-      }
-      if(questions[nextQuestion]){
-        questions[nextQuestion].pointedToBy.push(answerId);
-      }
     }
     console.log("update answer successfully");
+  }
+  else{
+    console.log("answer does not exist");
   }
 }
 
