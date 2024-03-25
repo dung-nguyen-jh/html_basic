@@ -50,17 +50,6 @@ function init() {
     });
   }
 
-  //handle the click event on the map to add marker on user click
-  map.on("click", function (event) {
-    // Retrieve the coordinates where the user clicked
-    let lngLat = event.lngLat;
-
-    // promt the user to enter a message for the marker
-    let msg = prompt("Enter a message for the marker");
-    if (msg) addMarker(lngLat, msg);
-  });
-
-  
   //get suggestions from the mapbox api based on the search input
   async function getSuggestions(searchInput) {
     try {
@@ -161,6 +150,16 @@ function init() {
       searchResultsDiv.appendChild(resultDiv);
     });
   }
+
+  //handle the click event on the map to add marker on user click
+  map.on("click", function (event) {
+    // Retrieve the coordinates where the user clicked
+    let lngLat = event.lngLat;
+
+    // promt the user to enter a message for the marker
+    let msg = prompt("Enter a message for the marker");
+    if (msg) addMarker(lngLat, msg);
+  });
 
   // Adding event listener to input field to trigger search on keyup
   document
