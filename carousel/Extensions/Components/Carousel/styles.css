@@ -12,7 +12,6 @@ body{
     overflow: hidden;
     position: relative;
     background-color: aqua;
-    padding-left: 10%;
 }
 
 .carousel_slides{
@@ -24,9 +23,9 @@ body{
 }
 
 .carousel_slide{
-   position: absolute;
-   inset: 0;
-   width: 90%;
+   position: relative;
+   margin-left: 30px;
+   width: 500px;
    border: 1px solid #000;
    /* opacity: 0; */
 }
