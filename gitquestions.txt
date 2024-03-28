@@ -1,10 +1,16 @@
 1. 
-    it is ideal to base new feature's branch on the most stable branch exist so in this situation, it's a good idea to create
-    a new branch from production.
-    corresponding commands:
-        git checkout production
-        git checkout -b new_feature production 
-        git push --set-upstream origin new_feature
+    it depends on the situation
+    it is ideal to choose the branch that is most stable for the current new feature
+    case 1:
+        feature_a depends on featture_b, feature_b has been merged to master
+        we check out from feature_b to develop feature_a
+    case 2:
+        feature_a is a brand new feature which will be added to production
+        create a new feature from production
+        corresponding commands:
+            git checkout production
+            git checkout -b new_feature production 
+            git push --set-upstream origin new_feature
 2.
     approach 1:
         just fix the bug on the feature branch 
@@ -26,8 +32,25 @@
             git checkout feature
             git merge feature_hotfix
 
+    approach 3:
+        if the bug originate from the origin branch of feature_a, we call it feature b.
+        in this case, we create a branch from the commit in which the bugs start to appear
+        from this branch, we fix the bug, then we merge them back to feature_a and feature_b
+        their could be conflicts so we need to resolve the conflicts.
+
+        relevant commands:
+            git checkout feature_b
+            git log
+            git checkout <commit-hash>
+            git checkout -b feature_b_fix
+            //fix the bugs 
+            git checkout feature_a
+            git merge feature_b_fix
+            git checkout feature_b
+            git merge featture_b_fix
+
 3.
-    using revert:revert create commits that undoes the previous ones
+    using revert:revert create commits that undo the previous ones
         use git log to track commits ids that need to be deleted
         use git revert to undo the changes
             git revert k101100 fc9348c 0492978
