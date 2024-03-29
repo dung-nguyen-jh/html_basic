@@ -23,11 +23,11 @@ class Question {
         }
         if(points === this.points) {
             return QuestionStatus.CORRECT;
-        } else if(points > 0) {
+        } 
+        if(points > 0) {
             return QuestionStatus.PARTLY_CORRECT;
-        } else {
-            return QuestionStatus.INCORRECT;
-        }
+        } 
+        return QuestionStatus.INCORRECT;
     }
 
     get points() {
